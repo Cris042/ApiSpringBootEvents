@@ -5,12 +5,12 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import edu.ifgoiano.example.events.models.Attractions;
+import edu.ifgoiano.example.events.models.Events;
 
-public interface AttractionRepository extends JpaRepository<Attractions, UUID> 
+public interface EventRepository extends JpaRepository<Events, UUID> 
 {
     Boolean existsByName(String name);
-    Optional<Attractions> findByName(String name);
+    Optional<Events> findByName(String name);
     boolean existsById(UUID id);
-    Optional<Attractions> findById(UUID id);
+    Optional<Events> findById(UUID id);
 }

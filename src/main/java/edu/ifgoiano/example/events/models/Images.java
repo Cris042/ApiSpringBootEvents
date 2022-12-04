@@ -5,7 +5,7 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-public class Image 
+public class Images 
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,13 +15,13 @@ public class Image
 
     private String url;
 
-    public Image(String name, String url)
+    public Images(String name, String url)
     {
         this.name = name;
         this.url = url;
     }
 
-    public Image()
+    public Images()
     {
         
     }

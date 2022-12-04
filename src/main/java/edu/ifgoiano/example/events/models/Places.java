@@ -1,32 +1,45 @@
-package edu.ifgoiano.example.events.dtos;
+package edu.ifgoiano.example.events.models;
 
-import javax.validation.constraints.NotBlank;
+import javax.persistence.*;
 
-import org.springframework.hateoas.RepresentationModel;
-
-public class PlaceDTO extends RepresentationModel<PlaceDTO>
+import java.util.UUID;
+@Entity
+public class Places 
 {
     
-    @NotBlank
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+    @Column(nullable = false)
     private String name;
-    @NotBlank
+    @Column(nullable = false)
     private String capacity;
-    @NotBlank
+    @Column(nullable = false)
     private String latitude;
-    @NotBlank
+    @Column(nullable = false)
     private String longitude;
 
-    public PlaceDTO(String name, String latitude, String longitude, String capacity) 
+    public Places(UUID id, String name, String latitude, String longitude, String capacity) 
     {
+        this.id = id;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.capacity = capacity;
     }
 
-    public PlaceDTO()
+    public Places()
     {
         
+    }
+   
+    public UUID getId() 
+    {
+        return id;
+    }
+    public void setId(UUID id) 
+    {
+        this.id = id;
     }
 
     public String getName() 
@@ -68,4 +81,5 @@ public class PlaceDTO extends RepresentationModel<PlaceDTO>
     {
         this.longitude = longitude;
     }
+
 }

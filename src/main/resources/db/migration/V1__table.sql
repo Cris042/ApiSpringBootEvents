@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS events
      id uuid NOT NULL,
      name character varying(64) NOT NULL,
      description character varying(255) NOT NULL,
-     data timestamp without time zone NOT NULL,
+     date character varying(64) NOT NULL,
      creation_date timestamp without time zone NOT NULL,   
      payment character varying(64) NOT NULL,
      id_place uuid NOT NULL,
@@ -21,14 +21,14 @@ CREATE TABLE IF NOT EXISTS places
      PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS category
+CREATE TABLE IF NOT EXISTS categorys
 (
      id uuid NOT NULL,
      name character varying(64) NOT NULL,
      PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS athletic
+CREATE TABLE IF NOT EXISTS athletics
 (
      id uuid NOT NULL,
      name character varying(64) NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS athletic
      PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS image
+CREATE TABLE IF NOT EXISTS images
 (
      id uuid NOT NULL,
      name character varying(255) UNIQUE NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS image
      PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS attraction
+CREATE TABLE IF NOT EXISTS attractions
 (
      id uuid NOT NULL,
      name character varying(64) NOT NULL,

@@ -1,26 +1,38 @@
-package edu.ifgoiano.example.events.dtos;
+package edu.ifgoiano.example.events.models;
 
-import javax.validation.constraints.NotBlank;
+import javax.persistence.*;
 
-import org.springframework.hateoas.RepresentationModel;
-
-public class AttractionDTO extends RepresentationModel<AttractionDTO>
+import java.util.UUID;
+@Entity
+public class Attractions 
 {
-    
-    @NotBlank
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+    @Column(nullable = false)
     private String name;
-    @NotBlank
+    @Column(nullable = false)
     private String description;
    
-    public AttractionDTO(String name, String description)
+    public Attractions(String name, String description)
     {
         this.name = name;
         this.description = description;
     }
 
-    public AttractionDTO()
+    public Attractions()
     {
         
+    }
+
+    
+    public UUID getId() 
+    {
+        return id;
+    }
+    public void setId(UUID id) 
+    {
+        this.id = id;
     }
     
     public String getdescription() 
@@ -42,4 +54,5 @@ public class AttractionDTO extends RepresentationModel<AttractionDTO>
     {
         this.name = name;
     }
+
 }
