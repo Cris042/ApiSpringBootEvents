@@ -5,14 +5,6 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table
-( 
-    name = "image",
-    uniqueConstraints = 
-    {
-       @UniqueConstraint(columnNames = "name"),
-    }
-)
 public class Image 
 {
     @Id
