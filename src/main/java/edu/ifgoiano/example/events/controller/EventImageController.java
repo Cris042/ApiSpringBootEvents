@@ -68,7 +68,7 @@ public class EventImageController
         var filename = fileStorageService.storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-        .path("/api/thing/downloadFile/")
+        .path("/api/event/downloadFile/")
         .path(filename)
         .toUriString();
 
@@ -77,11 +77,11 @@ public class EventImageController
         imageService.save( imageEntities );
         image.add(imageEntities);
  
-        var thingEntities = new Events();
-        BeanUtils.copyProperties( obj.get(), thingEntities);  
-        thingEntities.setImagens(image); 
+        var eventEntities = new Events();
+        BeanUtils.copyProperties( obj.get(), eventEntities);  
+        eventEntities.setImagens(image); 
 
-        eventService.save( thingEntities );
+        eventService.save( eventEntities );
 
                     
         return new UploadFileResponseVO(filename, fileDownloadUri, file.getContentType(), file.getSize());

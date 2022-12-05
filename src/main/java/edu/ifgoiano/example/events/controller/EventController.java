@@ -87,6 +87,14 @@ public class EventController
         {
             throw new UnsupportedException("Conflict: Name is already in use! !");
         }
+        if( placeService.existsByPlacesID( eventDTO.getPlace().getId() ) == false)
+        {
+            throw new NotFoundException("Conflict: Place not found! !");
+        }
+        if( categoryService.existsByCategorysID( eventDTO.getCategory().getId() ) == false)
+        {
+            throw new NotFoundException("Conflict: Categorys not found! !");
+        }
        
         var eventEntities = new Events();
         BeanUtils.copyProperties( eventDTO, eventEntities);  
@@ -177,4 +185,6 @@ public class EventController
     
         return ResponseEntity.status(HttpStatus.OK).body( eventService.save( eventEntities ) );
     }
+
+    
 }

@@ -35,12 +35,12 @@ public class Attractions
         this.id = id;
     }
     
-    public String getdescription() 
+    public String getDescription() 
     {
         return description;
     }
 
-    public void setdescription(String description) 
+    public void setDescription(String description) 
     {
         this.description = description;
     }

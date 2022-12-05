@@ -1,8 +1,10 @@
 package edu.ifgoiano.example.events.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -26,10 +28,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ifgoiano.example.events.dtos.AthleticDTO;
+import edu.ifgoiano.example.events.dtos.request.IdAthleticDTO;
 import edu.ifgoiano.example.events.exceptions.others.NotFoundException;
 import edu.ifgoiano.example.events.exceptions.others.UnsupportedException;
 import edu.ifgoiano.example.events.models.Athletics;
+import edu.ifgoiano.example.events.models.Events;
 import edu.ifgoiano.example.events.service.AthleticService;
+import edu.ifgoiano.example.events.service.EventService;
 
 
 @CrossOrigin(origins = "http://localhost:8080", maxAge = 3600)
@@ -39,6 +44,9 @@ public class AthleticControlle
 {
     @Autowired
     AthleticService athleticService;
+
+    @Autowired
+    EventService eventService;
 
 
     @GetMapping("all")
@@ -77,7 +85,33 @@ public class AthleticControlle
         athleticService.save( athleticEntities );
 
         return ResponseEntity.status(HttpStatus.CREATED).body( athleticDTO );
-    }   
+    }  
+    
+    @PostMapping("event/{id}")
+    public ResponseEntity<Object> saveAthleticEvent(@Valid  @RequestBody IdAthleticDTO athleticDTO ,@PathVariable(value = "id") UUID id )
+    {
+        Optional<Events> obj = eventService.findByEventsID(id);
+        Optional<Athletics> athletic = athleticService.findByAthleticsID( athleticDTO.getId() );
+
+        if (!obj.isPresent() || athletic.isPresent()) 
+        {
+            throw new NotFoundException("Not found!.");
+        }
+
+        Set<Athletics> athletics = new HashSet<>();
+        var athleticEntities = new Athletics( athletic.get().getName(), athletic.get().getDescription(), athletic.get().getCourse() );
+
+        athletics.add( athleticEntities );
+
+
+        var thingEntities = new Events();
+        BeanUtils.copyProperties( obj.get(), thingEntities);  
+        thingEntities.setAthletics( athletics ); 
+
+        eventService.save( thingEntities );
+         
+        return ResponseEntity.status(HttpStatus.CREATED).body( "Successfully|" );
+    }
 
     @GetMapping("{id}")
     public ResponseEntity<AthleticDTO> get(@PathVariable(value = "id") UUID id)
