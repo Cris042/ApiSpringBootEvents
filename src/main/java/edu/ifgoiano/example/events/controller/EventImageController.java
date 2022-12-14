@@ -63,7 +63,8 @@ public class EventImageController
             throw new NotFoundException("Thing Not found!.");
         }
 
-        Set<Images> image = new HashSet<>();
+        Set<Images> imagensOLD = obj.get().getImagens();
+        Set<Images> images = new HashSet<>();
 
         var filename = fileStorageService.storeFile(file);
 
@@ -75,15 +76,20 @@ public class EventImageController
         var imageEntities = new Images( filename, fileDownloadUri );
 
         imageService.save( imageEntities );
-        image.add(imageEntities);
+
+        images.add(imageEntities);
+
+        imagensOLD.forEach( imagenOLD  -> 
+        {
+            images.add( imagenOLD );
+        });
  
         var eventEntities = new Events();
         BeanUtils.copyProperties( obj.get(), eventEntities);  
-        eventEntities.setImagens(image); 
+        eventEntities.setImagens(images); 
 
         eventService.save( eventEntities );
-
-                    
+                 
         return new UploadFileResponseVO(filename, fileDownloadUri, file.getContentType(), file.getSize());
     }
 

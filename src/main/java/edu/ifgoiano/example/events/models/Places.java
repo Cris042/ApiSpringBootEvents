@@ -3,6 +3,7 @@ package edu.ifgoiano.example.events.models;
 import javax.persistence.*;
 
 import java.util.UUID;
+
 @Entity
 public class Places 
 {

@@ -40,7 +40,6 @@ public class CategoryController
     @Autowired
     CategoryService categoryService;
 
-
     @GetMapping("all")
     public ResponseEntity<List<CategoryDTO>> getAll(@PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable)
     {

@@ -1,5 +1,5 @@
 <h1 allign="center">
-    Spring Boot - Lost And Foud
+    Spring Boot - Events
 </h1>
 
 ## Tecnologias 🚀 

@@ -32,7 +32,6 @@ import edu.ifgoiano.example.events.dtos.request.IdAthleticDTO;
 import edu.ifgoiano.example.events.exceptions.others.NotFoundException;
 import edu.ifgoiano.example.events.exceptions.others.UnsupportedException;
 import edu.ifgoiano.example.events.models.Athletics;
-import edu.ifgoiano.example.events.models.Events;
 import edu.ifgoiano.example.events.service.AthleticService;
 import edu.ifgoiano.example.events.service.EventService;
 
@@ -90,21 +89,25 @@ public class AthleticControlle
     @PostMapping("event/{id}")
     public ResponseEntity<Object> saveAthleticEvent(@Valid  @RequestBody IdAthleticDTO athleticDTO ,@PathVariable(value = "id") UUID id )
     {
-        Optional<Events> obj = eventService.findByEventsID(id);
-        Optional<Athletics> athletic = athleticService.findByAthleticsID( athleticDTO.getId() );
+        var obj = eventService.findByEventsID(id);
+        var athletic = athleticService.findByAthleticsID( athleticDTO.getId() );
 
-        if (!obj.isPresent() || athletic.isPresent()) 
+        if (!obj.isPresent() && athletic.isPresent()) 
         {
             throw new NotFoundException("Not found!.");
         }
 
+        Set<Athletics> athleticsOLD = obj.get().getAthletics();
         Set<Athletics> athletics = new HashSet<>();
-        var athleticEntities = new Athletics( athletic.get().getName(), athletic.get().getDescription(), athletic.get().getCourse() );
 
-        athletics.add( athleticEntities );
+        athletics.add( athletic.get() );
 
+        athleticsOLD.forEach( athleticOLD -> 
+        {
+            athletics.add( athleticOLD );
+        });
 
-        var thingEntities = new Events();
+        var thingEntities = obj.get();
         BeanUtils.copyProperties( obj.get(), thingEntities);  
         thingEntities.setAthletics( athletics ); 
 

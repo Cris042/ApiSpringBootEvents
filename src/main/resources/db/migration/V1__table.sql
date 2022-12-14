@@ -54,3 +54,41 @@ CREATE TABLE IF NOT EXISTS attractions
 );
 
 
+-- CREATE TABLE IF NOT EXISTS events_athletic
+-- (    
+--      id uuid NOT NULL,
+--      id_events uuid NOT NULL,
+--      id_athletics uuid NOT NULL,
+--      FOREIGN KEY (id_events) REFERENCES events (id)
+--      FOREIGN KEY (id_athletics) REFERENCES athletics (id)
+--      PRIMARY KEY (id)
+-- );
+
+-- CREATE TABLE IF NOT EXISTS events_attraction
+-- (
+--      id uuid NOT NULL,
+--      id_events uuid NOT NULL,
+--      id_attraction uuid NOT NULL,
+--      PRIMARY KEY (id)
+--      FOREIGN KEY (id_events) REFERENCES events (id)
+--      FOREIGN KEY (id_attraction) REFERENCES attractions (id)
+-- );
+
+-- CREATE TABLE IF NOT EXISTS events_imagen
+-- (
+--      id uuid NOT NULL,
+--      id_events uuid NOT NULL,
+--      id_img uuid NOT NULL,
+--      PRIMARY KEY (id)
+--      FOREIGN KEY (id_events) REFERENCES events (id)
+--      FOREIGN KEY (id_img) REFERENCES images (id)
+-- );
+
+
+-- CREATE TABLE IF NOT EXISTS participants
+-- (
+--      id uuid NOT NULL,
+--      event_id uuid NOT NULL,
+--      user_id uuid NOT NULL,
+--      PRIMARY KEY (id)
+-- );

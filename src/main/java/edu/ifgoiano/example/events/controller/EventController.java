@@ -28,13 +28,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ifgoiano.example.events.dtos.EventDTO;
+import edu.ifgoiano.example.events.dtos.request.IdUserDTO;
 import edu.ifgoiano.example.events.exceptions.others.NotFoundException;
 import edu.ifgoiano.example.events.exceptions.others.UnsupportedException;
 import edu.ifgoiano.example.events.models.Categorys;
 import edu.ifgoiano.example.events.models.Events;
+import edu.ifgoiano.example.events.models.Participants;
 import edu.ifgoiano.example.events.models.Places;
 import edu.ifgoiano.example.events.service.CategoryService;
 import edu.ifgoiano.example.events.service.EventService;
+import edu.ifgoiano.example.events.service.ParticipantService;
 import edu.ifgoiano.example.events.service.PlaceService;
 
 
@@ -51,6 +54,9 @@ public class EventController
 
     @Autowired
     PlaceService placeService;
+
+    @Autowired
+    ParticipantService participantService;
 
     @GetMapping("all")
     public ResponseEntity<List<EventDTO>> getAll(@PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable)
@@ -73,11 +79,57 @@ public class EventController
                 WebMvcLinkBuilder.methodOn( EventController.class ).get( id ) )
                 .withRel("Editar") 
             );
+
+            eventObj.add( WebMvcLinkBuilder.linkTo
+            (
+                WebMvcLinkBuilder.methodOn( EventController.class ).getAthletics( id ) )
+                .withRel("List Athletics") 
+            );
+
+            eventObj.add( WebMvcLinkBuilder.linkTo
+            (
+                WebMvcLinkBuilder.methodOn( EventController.class ).getAttraction( id ) )
+                .withRel("List Attraction") 
+            );
+
+            eventObj.add( WebMvcLinkBuilder.linkTo
+            (
+                WebMvcLinkBuilder.methodOn( EventController.class ).getImagens( id ) )
+                .withRel("List Imagens") 
+            );
             
             eventList.add(eventObj);       
         }
 
         return ResponseEntity.status(HttpStatus.OK).body( eventList );
+    }
+
+    @GetMapping("participant/{id}")
+    public ResponseEntity<List<IdUserDTO>> getParticipants(@PathVariable(value = "id") UUID id ,@PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable)
+    {
+        Optional<Events> obj = eventService.findByEventsID(id);
+
+        if (!obj.isPresent()) 
+        {
+            throw new NotFoundException("Not found!.");
+        }
+        
+        var participantsAll = participantService.findByEventID( id );
+
+        List<IdUserDTO> participantsList = new ArrayList<>();
+        
+        for(Participants participant : participantsAll) 
+        {
+           
+            IdUserDTO eventObj = new IdUserDTO
+            ( 
+                participant.getUserId()
+            );
+            
+            participantsList .add(eventObj);       
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body( participantsList  );
     }
 
     @PostMapping("add")
@@ -120,6 +172,30 @@ public class EventController
         return ResponseEntity.status(HttpStatus.CREATED).body( eventDTO );
     }   
 
+    @PostMapping("participant/{id}")
+    public ResponseEntity<Object> participant(@PathVariable(value = "id") UUID id, @Valid @RequestBody IdUserDTO idUser)
+    {
+        Optional<Events> obj = eventService.findByEventsID(id);
+
+        if (!obj.isPresent()) 
+        {
+            throw new NotFoundException("Not found!.");
+        }
+
+        if( participantService.existsByUserID( idUser.getId() ) == true )
+        {
+            throw new NotFoundException("Conflict!");
+        }
+
+        var participantEntities = new Participants();
+
+        participantEntities.setUserId( idUser.getId() );
+        participantEntities.setEventId( id );
+        participantService.save(participantEntities);
+
+        return ResponseEntity.status(HttpStatus.OK).body( "Successfull!" );
+    }
+
     @GetMapping("{id}")
     public ResponseEntity<EventDTO> get(@PathVariable(value = "id") UUID id)
     {
@@ -142,7 +218,100 @@ public class EventController
             .withRel("Listar Tudo") 
         );
 
+        eventObj.add( WebMvcLinkBuilder.linkTo
+        (
+            WebMvcLinkBuilder.methodOn( EventController.class ).getAthletics( id ) )
+            .withRel("List Athletics") 
+        );
+
+        eventObj.add( WebMvcLinkBuilder.linkTo
+        (
+            WebMvcLinkBuilder.methodOn( EventController.class ).getAttraction( id ) )
+            .withRel("List Attraction") 
+        );
+
+        eventObj.add( WebMvcLinkBuilder.linkTo
+        (
+            WebMvcLinkBuilder.methodOn( EventController.class ).getImagens( id ) )
+            .withRel("List Imagens") 
+        );
+
         return ResponseEntity.status(HttpStatus.OK).body( eventObj );
+    }
+
+    @GetMapping("imagens/{id}")
+    public ResponseEntity<?> getImagens(@PathVariable(value = "id") UUID id)
+    {
+        Optional<Events> obj = eventService.findByEventsID(id);
+
+        if (!obj.isPresent()) 
+        {
+            throw new NotFoundException("Not found!.");
+        }
+       
+        EventDTO eventObj = new EventDTO
+        ( 
+            obj.get().getName(), obj.get().getDescription(), obj.get().getPayment(), obj.get().getDate(),
+            obj.get().getAthletics(), obj.get().getImagens(), obj.get().getAttraction(), obj.get().getCategory(), obj.get().getPlace()
+        );
+
+        eventObj.add
+        ( 
+            WebMvcLinkBuilder.linkTo( WebMvcLinkBuilder.methodOn( EventController.class ).getAll(null) )
+            .withRel("Listar Tudo") 
+        );
+        
+        return ResponseEntity.status(HttpStatus.OK).body( eventObj.getImagens() );
+    }
+
+    @GetMapping("attraction/{id}")
+    public ResponseEntity<?> getAttraction(@PathVariable(value = "id") UUID id)
+    {
+        Optional<Events> obj = eventService.findByEventsID(id);
+
+        if (!obj.isPresent()) 
+        {
+            throw new NotFoundException("Not found!.");
+        }
+       
+        EventDTO eventObj = new EventDTO
+        ( 
+            obj.get().getName(), obj.get().getDescription(), obj.get().getPayment(), obj.get().getDate(),
+            obj.get().getAthletics(), obj.get().getImagens(), obj.get().getAttraction(), obj.get().getCategory(), obj.get().getPlace()
+        );
+
+        eventObj.add
+        ( 
+            WebMvcLinkBuilder.linkTo( WebMvcLinkBuilder.methodOn( EventController.class ).getAll(null) )
+            .withRel("Listar Tudo") 
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body( eventObj.getAttraction() );
+    }
+
+    @GetMapping("athletics/{id}")
+    public ResponseEntity<?> getAthletics(@PathVariable(value = "id") UUID id)
+    {
+        Optional<Events> obj = eventService.findByEventsID(id);
+
+        if (!obj.isPresent()) 
+        {
+            throw new NotFoundException("Not found!.");
+        }
+       
+        EventDTO eventObj = new EventDTO
+        ( 
+            obj.get().getName(), obj.get().getDescription(), obj.get().getPayment(), obj.get().getDate(),
+            obj.get().getAthletics(), obj.get().getImagens(), obj.get().getAttraction(), obj.get().getCategory(), obj.get().getPlace()
+        );
+
+        eventObj.add
+        ( 
+            WebMvcLinkBuilder.linkTo( WebMvcLinkBuilder.methodOn( EventController.class ).getAll(null) )
+            .withRel("Listar Tudo") 
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body( eventObj.getAthletics() );
     }
 
     @DeleteMapping("delete/{id}")
